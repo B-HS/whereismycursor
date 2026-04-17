@@ -28,9 +28,9 @@ struct SettingsView: View {
                         set: { newValue in
                             settings.overlayColor = NSColor(newValue)
                             onAppearanceChange()
-                        },
+                        }
                     ),
-                    supportsOpacity: true,
+                    supportsOpacity: true
                 )
 
                 HStack {
@@ -70,7 +70,7 @@ struct SettingsView: View {
                     ShortcutRecorderView(
                         spec: $settings.hotKey,
                         onBeginRecording: onBeginRecording,
-                        onEndRecording: onHotKeyChange,
+                        onEndRecording: onHotKeyChange
                     )
                 }
             }
@@ -78,7 +78,7 @@ struct SettingsView: View {
             Section(header: Text(L("settings.section.language"))) {
                 Picker(L("settings.language"), selection: Binding(
                     get: { localization.current },
-                    set: { localization.set($0) },
+                    set: { localization.set($0) }
                 )) {
                     ForEach(LocalizationManager.Language.allCases) { language in
                         Text(language.displayName).tag(language)

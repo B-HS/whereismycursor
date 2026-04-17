@@ -46,7 +46,7 @@ final class OverlayController {
                 color: settings.overlayColor,
                 opacity: settings.opacity,
                 image: image,
-                useImage: settings.usePattern,
+                useImage: settings.usePattern
             )
         }
         updateCursorPosition()
@@ -74,7 +74,7 @@ final class OverlayController {
                     color: settings.overlayColor,
                     opacity: settings.opacity,
                     image: image,
-                    useImage: settings.usePattern,
+                    useImage: settings.usePattern
                 )
             } else {
                 let panel = OverlayPanel(contentRect: frame)
@@ -83,7 +83,7 @@ final class OverlayController {
                     color: settings.overlayColor,
                     opacity: settings.opacity,
                     image: image,
-                    useImage: settings.usePattern,
+                    useImage: settings.usePattern
                 )
                 panel.contentView = view
                 panel.setFrame(frame, display: false)
@@ -137,7 +137,7 @@ final class OverlayController {
             let origin = pair.panel.frame.origin
             let local = CGPoint(
                 x: globalPoint.x - origin.x,
-                y: globalPoint.y - origin.y,
+                y: globalPoint.y - origin.y
             )
             pair.view.update(cursorPoint: local, radius: settings.radius)
         }

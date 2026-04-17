@@ -7,7 +7,7 @@ final class ScreenObserver {
         token = NotificationCenter.default.addObserver(
             forName: NSApplication.didChangeScreenParametersNotification,
             object: nil,
-            queue: .main,
+            queue: .main
         ) { _ in onChange() }
     }
 

@@ -72,7 +72,7 @@ final class OverlayView: NSView {
             x: cursorPoint.x - radius,
             y: cursorPoint.y - radius,
             width: radius * 2,
-            height: radius * 2,
+            height: radius * 2
         )
         path.addEllipse(in: hole)
         CATransaction.begin()

@@ -7,13 +7,13 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
     init(
         onAppearanceChange: @escaping () -> Void,
         onBeginRecording: @escaping () -> Void,
-        onHotKeyChange: @escaping (HotKeySpec) -> Void,
+        onHotKeyChange: @escaping (HotKeySpec) -> Void
     ) {
         let view = SettingsView(
             settings: AppSettings.shared,
             onAppearanceChange: onAppearanceChange,
             onBeginRecording: onBeginRecording,
-            onHotKeyChange: onHotKeyChange,
+            onHotKeyChange: onHotKeyChange
         )
         let hosting = NSHostingController(rootView: view)
         hosting.sizingOptions = [.preferredContentSize]
@@ -21,7 +21,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
             contentRect: NSRect(x: 0, y: 0, width: 500, height: 600),
             styleMask: [.titled, .closable],
             backing: .buffered,
-            defer: false,
+            defer: false
         )
         window.contentViewController = hosting
         window.title = LocalizationManager.shared.localized("settings.title")
@@ -34,7 +34,7 @@ final class SettingsWindowController: NSWindowController, NSWindowDelegate {
         languageObserver = NotificationCenter.default.addObserver(
             forName: .cursorSpotlightLanguageChanged,
             object: nil,
-            queue: .main,
+            queue: .main
         ) { [weak self] _ in
             self?.window?.title = LocalizationManager.shared.localized("settings.title")
         }

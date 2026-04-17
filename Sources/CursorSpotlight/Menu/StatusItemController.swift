@@ -8,7 +8,7 @@ final class StatusItemController: NSObject {
 
     init(
         onOpenSettings: @escaping () -> Void,
-        onQuit: @escaping () -> Void,
+        onQuit: @escaping () -> Void
     ) {
         self.onOpenSettings = onOpenSettings
         self.onQuit = onQuit
@@ -16,7 +16,7 @@ final class StatusItemController: NSObject {
         languageObserver = NotificationCenter.default.addObserver(
             forName: .cursorSpotlightLanguageChanged,
             object: nil,
-            queue: .main,
+            queue: .main
         ) { [weak self] _ in
             self?.rebuildMenu()
         }

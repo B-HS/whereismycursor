@@ -20,7 +20,7 @@ let package = Package(
             path: "Sources/CursorSpotlight",
             swiftSettings: [
                 .swiftLanguageMode(.v5),
-            ],
+            ]
         ),
         .testTarget(
             name: "CursorSpotlightTests",
@@ -28,7 +28,7 @@ let package = Package(
             path: "Tests/CursorSpotlightTests",
             swiftSettings: [
                 .swiftLanguageMode(.v5),
-            ],
+            ]
         ),
-    ],
+    ]
 )

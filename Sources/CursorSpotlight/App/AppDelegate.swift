@@ -4,11 +4,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let overlayController = OverlayController()
     private lazy var statusItemController = StatusItemController(
         onOpenSettings: { [weak self] in self?.openSettings() },
-        onQuit: { NSApp.terminate(nil) },
+        onQuit: { NSApp.terminate(nil) }
     )
     private lazy var hotKeyManager = HotKeyManager(
         onKeyDown: { [weak self] in self?.overlayController.show() },
-        onKeyUp: { [weak self] in self?.overlayController.hide() },
+        onKeyUp: { [weak self] in self?.overlayController.hide() }
     )
     private var settingsWindow: SettingsWindowController?
 
@@ -28,7 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settingsWindow = SettingsWindowController(
                 onAppearanceChange: { [weak self] in self?.overlayController.refreshAppearance() },
                 onBeginRecording: { [weak self] in self?.hotKeyManager.pause() },
-                onHotKeyChange: { [weak self] spec in self?.hotKeyManager.apply(spec) },
+                onHotKeyChange: { [weak self] spec in self?.hotKeyManager.apply(spec) }
             )
         }
         settingsWindow?.showWindow(nil)

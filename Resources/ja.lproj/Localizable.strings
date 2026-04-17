@@ -1,0 +1,23 @@
+"menu.toggle" = "スポットライトの切り替え";
+"menu.settings" = "環境設定…";
+"menu.quit" = "終了";
+
+"settings.title" = "カーソルスポットライト設定";
+"settings.radius" = "スポットライト半径";
+"settings.color" = "オーバーレイの色";
+"settings.opacity" = "全体の不透明度";
+"settings.pattern" = "画像パターンを使用";
+"settings.pattern.choose" = "画像を選択…";
+"settings.pattern.none" = "画像が選択されていません";
+"settings.hotkey" = "グローバルショートカット";
+"settings.launchAtLogin" = "ログイン時に起動";
+"settings.allScreens" = "すべての画面を覆う";
+"settings.done" = "完了";
+"settings.section.appearance" = "外観";
+"settings.section.behavior" = "動作";
+"settings.section.shortcut" = "ショートカット";
+"settings.shortcut.recording" = "キーを入力してください…";
+"settings.shortcut.hint" = "esc でキャンセル";
+"settings.section.language" = "言語";
+"settings.language" = "言語";
+"settings.language.system" = "システムのデフォルト";

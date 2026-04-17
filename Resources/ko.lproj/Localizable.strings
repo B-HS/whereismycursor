@@ -1,0 +1,23 @@
+"menu.toggle" = "스포트라이트 토글";
+"menu.settings" = "환경설정…";
+"menu.quit" = "종료";
+
+"settings.title" = "커서 스포트라이트 설정";
+"settings.radius" = "스포트라이트 반경";
+"settings.color" = "오버레이 색상";
+"settings.opacity" = "전체 불투명도";
+"settings.pattern" = "이미지 패턴 사용";
+"settings.pattern.choose" = "이미지 선택…";
+"settings.pattern.none" = "선택된 이미지 없음";
+"settings.hotkey" = "전역 단축키";
+"settings.launchAtLogin" = "로그인 시 자동 실행";
+"settings.allScreens" = "모든 화면 덮기";
+"settings.done" = "완료";
+"settings.section.appearance" = "외관";
+"settings.section.behavior" = "동작";
+"settings.section.shortcut" = "단축키";
+"settings.shortcut.recording" = "키를 입력하세요…";
+"settings.shortcut.hint" = "esc 취소";
+"settings.section.language" = "언어";
+"settings.language" = "언어";
+"settings.language.system" = "시스템 기본값";

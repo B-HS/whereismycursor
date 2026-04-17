@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hyunseokbyun.github.io/whereismycursor/sitemap.xml

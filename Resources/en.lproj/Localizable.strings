@@ -1,0 +1,23 @@
+"menu.toggle" = "Toggle Spotlight";
+"menu.settings" = "Settings…";
+"menu.quit" = "Quit";
+
+"settings.title" = "Cursor Spotlight Settings";
+"settings.radius" = "Spotlight Radius";
+"settings.color" = "Overlay Color";
+"settings.opacity" = "Master Opacity";
+"settings.pattern" = "Use Image Pattern";
+"settings.pattern.choose" = "Choose Image…";
+"settings.pattern.none" = "No image selected";
+"settings.hotkey" = "Global Shortcut";
+"settings.launchAtLogin" = "Launch at Login";
+"settings.allScreens" = "Cover All Screens";
+"settings.done" = "Done";
+"settings.section.appearance" = "Appearance";
+"settings.section.behavior" = "Behavior";
+"settings.section.shortcut" = "Shortcut";
+"settings.shortcut.recording" = "Press keys…";
+"settings.shortcut.hint" = "esc to cancel";
+"settings.section.language" = "Language";
+"settings.language" = "Language";
+"settings.language.system" = "System Default";

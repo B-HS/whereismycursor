@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#000000" />
+
+<title>Cursor Spotlight — macOS Cursor Highlighter</title>
+<meta name="description" content="A zero-latency, minimalist macOS menu bar utility that spotlights your mouse cursor. Hold a hotkey, the rest of the screen dims. 416 KB. Native Swift." />
+<meta name="keywords" content="macOS, cursor, spotlight, menu bar app, Swift, AppKit, presentation, screen recording, accessibility" />
+<meta name="author" content="Hyunseok Byun" />
+<meta name="robots" content="index, follow" />
+
+<link rel="canonical" href="https://hyunseokbyun.github.io/whereismycursor/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Cursor Spotlight" />
+<meta property="og:title" content="Cursor Spotlight — macOS Cursor Highlighter" />
+<meta property="og:description" content="Hold a hotkey. Your cursor stays lit, the rest of the screen dims. 416 KB native macOS utility." />
+<meta property="og:url" content="https://hyunseokbyun.github.io/whereismycursor/" />
+<meta property="og:image" content="https://hyunseokbyun.github.io/whereismycursor/assets/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="ko_KR" />
+<meta property="og:locale:alternate" content="ja_JP" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Cursor Spotlight — macOS Cursor Highlighter" />
+<meta name="twitter:description" content="Hold a hotkey. Your cursor stays lit, the rest of the screen dims. 416 KB native macOS utility." />
+<meta name="twitter:image" content="https://hyunseokbyun.github.io/whereismycursor/assets/og-image.png" />
+
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="assets/favicon-96.png" />
+<link rel="icon" type="image/png" sizes="196x196" href="assets/favicon-196.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="assets/apple-touch-icon-152.png" />
+<link rel="apple-touch-icon" sizes="167x167" href="assets/apple-touch-icon-167.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="msapplication-TileImage" content="assets/mstile-150.png" />
+<meta name="msapplication-config" content="browserconfig.xml" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Cursor Spotlight",
+  "operatingSystem": "macOS 13+",
+  "applicationCategory": "UtilitiesApplication",
+  "author": {
+    "@type": "Person",
+    "name": "Hyunseok Byun"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "A zero-latency, minimalist macOS menu bar utility that spotlights your mouse cursor."
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<link href="https://cdn.jsdelivr.net/npm/video.js@8.23.8/dist/video-js.min.css" rel="stylesheet" />
+
+<style>
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-radius: 0 !important;
+}
+
+:root {
+    --bg: #000000;
+    --bg-elev: #0a0a0a;
+    --fg: #ffffff;
+    --fg-mid: #a0a0a0;
+    --fg-dim: #606060;
+    --border: #1a1a1a;
+    --border-strong: #2a2a2a;
+    --accent: #ffffff;
+    --grid: rgba(255, 255, 255, 0.04);
+}
+
+html {
+    background: var(--bg);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.5;
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+.spotlight {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: radial-gradient(
+        600px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255, 255, 255, 0.06),
+        transparent 50%
+    );
+    transition: background 120ms linear;
+}
+
+.grid-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+nav .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+}
+
+nav .brand .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--fg);
+    display: inline-block;
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    list-style: none;
+}
+
+nav a {
+    color: var(--fg-mid);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 150ms ease;
+}
+
+nav a:hover {
+    color: var(--fg);
+}
+
+main {
+    position: relative;
+    z-index: 2;
+}
+
+section {
+    padding: 120px 32px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero {
+    padding-top: 140px;
+    padding-bottom: 80px;
+}
+
+.hero .tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid var(--border-strong);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--fg-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+    width: fit-content;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 9vw, 128px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 32px;
+}
+
+.hero h1 .line {
+    display: block;
+    overflow: hidden;
+}
+
+.hero h1 .line span {
+    display: inline-block;
+}
+
+.hero h1 .accent {
+    color: var(--fg-dim);
+}
+
+.hero .lede {
+    max-width: 640px;
+    font-size: 18px;
+    color: var(--fg-mid);
+    margin-bottom: 48px;
+    line-height: 1.55;
+}
+
+.cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--fg);
+    background: var(--fg);
+    color: var(--bg);
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.btn:hover {
+    background: transparent;
+    color: var(--fg);
+}
+
+.btn.ghost {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--border-strong);
+}
+
+.btn.ghost:hover {
+    border-color: var(--fg);
+}
+
+.btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-head .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.section-head h2 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.video-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    overflow: hidden;
+}
+
+.video-wrap .video-js {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.video-wrap .video-js .vjs-tech {
+    width: 100%;
+    height: 100%;
+}
+
+.video-wrap .video-js .vjs-big-play-button {
+    width: 72px;
+    height: 72px;
+    line-height: 70px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    transition: background 180ms ease, border-color 180ms ease;
+}
+
+.video-wrap .video-js:hover .vjs-big-play-button,
+.video-wrap .video-js .vjs-big-play-button:focus {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.video-wrap .video-js .vjs-control-bar {
+    background: rgba(0, 0, 0, 0.72);
+    font-size: 12px;
+}
+
+.video-wrap .video-js .vjs-slider {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.video-wrap .video-js .vjs-play-progress,
+.video-wrap .video-js .vjs-volume-level {
+    background: #fff;
+}
+
+.video-wrap .video-js .vjs-load-progress {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.video-wrap .video-js .vjs-load-progress div {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--border-strong);
+    border-left: 1px solid var(--border-strong);
+}
+
+.feature {
+    padding: 40px 32px;
+    border-right: 1px solid var(--border-strong);
+    border-bottom: 1px solid var(--border-strong);
+    transition: background 220ms ease;
+}
+
+.feature:hover {
+    background: var(--bg-elev);
+}
+
+.feature .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--fg-dim);
+    letter-spacing: 0.12em;
+    margin-bottom: 24px;
+    display: block;
+}
+
+.feature h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+.feature p {
+    color: var(--fg-mid);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.specs {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+    align-items: start;
+}
+
+.specs .code-block {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    padding: 24px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--fg-mid);
+    overflow-x: auto;
+}
+
+.specs .code-block .k { color: var(--fg); font-weight: 600; }
+.specs .code-block .v { color: var(--fg-mid); }
+.specs .code-block .c { color: var(--fg-dim); }
+
+.install-box {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    padding: 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.install-box .cmd {
+    color: var(--fg);
+}
+
+.install-box .cmd::before {
+    content: '$ ';
+    color: var(--fg-dim);
+}
+
+.copy-btn {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--fg-mid);
+    padding: 8px 14px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: border-color 160ms, color 160ms;
+}
+
+.copy-btn:hover {
+    border-color: var(--fg);
+    color: var(--fg);
+}
+
+.copy-btn.copied {
+    color: var(--bg);
+    background: var(--fg);
+    border-color: var(--fg);
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    max-width: 1200px;
+    font-size: 12px;
+    color: var(--fg-dim);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+footer a {
+    color: var(--fg-mid);
+    text-decoration: none;
+    transition: color 160ms;
+}
+
+footer a:hover {
+    color: var(--fg);
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+}
+
+@media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    nav ul { gap: 16px; }
+    section { padding: 100px 20px 60px; min-height: auto; }
+    .hero { padding-top: 120px; min-height: 100dvh; }
+    .specs { grid-template-columns: 1fr; gap: 24px; }
+    .section-head { flex-direction: column; gap: 8px; align-items: flex-start; }
+    footer { flex-direction: column; align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="spotlight" id="spotlight" aria-hidden="true"></div>
+
+<nav>
+    <div class="brand">
+        <span class="dot"></span>
+        <span>CURSOR SPOTLIGHT</span>
+    </div>
+    <ul>
+        <li><a href="#video">Demo</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#install">Install</a></li>
+        <li><a href="https://github.com/hyunseokbyun/whereismycursor" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<section class="hero" id="hero">
+    <span class="tag reveal">v0.1.0 · macOS 13+ · 416 KB</span>
+    <h1>
+        <span class="line"><span data-anim="title">Hold.</span></span>
+        <span class="line"><span data-anim="title">Spot.</span></span>
+        <span class="line"><span data-anim="title" class="accent">Release.</span></span>
+    </h1>
+    <p class="lede reveal">
+        A zero-latency macOS utility that spotlights your mouse cursor.
+        Bind a hotkey — while you hold it, the rest of the screen dims.
+        Built in pure Swift + AppKit. No Electron. No bloat.
+    </p>
+    <div class="cta-row reveal">
+        <a class="btn" href="https://github.com/hyunseokbyun/whereismycursor/releases/latest" target="_blank" rel="noopener">
+            Download Latest
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+        </a>
+        <a class="btn ghost" href="https://github.com/hyunseokbyun/whereismycursor" target="_blank" rel="noopener">
+            View Source
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+        </a>
+    </div>
+</section>
+
+<section id="video">
+    <div class="section-head reveal">
+        <div>
+            <span class="label">[ 01 ]  Demo</span>
+            <h2>See it run.</h2>
+        </div>
+    </div>
+    <div class="video-wrap reveal">
+        <video id="demoVideo" class="video-js vjs-big-play-centered" controls preload="none" playsinline poster="assets/poster.png"></video>
+    </div>
+</section>
+
+<section id="features">
+    <div class="section-head reveal">
+        <div>
+            <span class="label">[ 02 ]  Features</span>
+            <h2>What it does.</h2>
+        </div>
+    </div>
+    <div class="features">
+        <div class="feature reveal">
+            <span class="num">/ 01</span>
+            <h3>Hold-to-Show</h3>
+            <p>Press your bound hotkey; the overlay appears instantly. Release it; gone. No toggle state to remember.</p>
+        </div>
+        <div class="feature reveal">
+            <span class="num">/ 02</span>
+            <h3>Custom Shortcut</h3>
+            <p>Record any key combination directly in the settings window. Single keys, full modifier stacks — both work.</p>
+        </div>
+        <div class="feature reveal">
+            <span class="num">/ 03</span>
+            <h3>Color & Pattern</h3>
+            <p>Pick overlay color with alpha, adjust master opacity, or layer an image pattern as the mask fill.</p>
+        </div>
+        <div class="feature reveal">
+            <span class="num">/ 04</span>
+            <h3>Multi-Monitor</h3>
+            <p>One NSPanel per screen at .screenSaver level. Works across Spaces, full-screen apps, and display hot-swap.</p>
+        </div>
+        <div class="feature reveal">
+            <span class="num">/ 05</span>
+            <h3>Trilingual UI</h3>
+            <p>English · 한국어 · 日本語. Switch in-app with no restart. Follows system locale by default.</p>
+        </div>
+        <div class="feature reveal">
+            <span class="num">/ 06</span>
+            <h3>Launch at Login</h3>
+            <p>SMAppService-based. Toggle once, it boots with your Mac. Settings persist via UserDefaults.</p>
+        </div>
+    </div>
+</section>
+
+<section id="specs">
+    <div class="section-head reveal">
+        <div>
+            <span class="label">[ 03 ]  Specs</span>
+            <h2>Under the hood.</h2>
+        </div>
+    </div>
+    <div class="specs">
+        <div class="reveal">
+            <p style="color: var(--fg-mid); font-size: 15px; line-height: 1.7;">
+                Native AppKit + Core Animation. The overlay is a single <code class="mono" style="color:var(--fg)">CAShapeLayer</code> with <code class="mono" style="color:var(--fg)">evenOdd</code> fill — one rectangle minus one ellipse. Per-screen NSPanel at <code class="mono" style="color:var(--fg)">.screenSaver</code> level with <code class="mono" style="color:var(--fg)">ignoresMouseEvents</code>.
+                Global hotkeys via Carbon, not NSEvent — no Accessibility permission prompt needed.
+            </p>
+        </div>
+        <pre class="code-block reveal"><span class="c">// package & runtime</span>
+<span class="k">language</span>      <span class="v">Swift 6</span>
+<span class="k">target</span>        <span class="v">macOS 13.0+</span>
+<span class="k">ui</span>            <span class="v">SwiftUI (settings) + AppKit (overlay)</span>
+<span class="k">size</span>          <span class="v">416 KB signed .app</span>
+<span class="k">deps</span>          <span class="v">HotKey (single dep)</span>
+
+<span class="c">// overlay pipeline</span>
+<span class="k">window</span>        <span class="v">NSPanel · .screenSaver · nonactivating</span>
+<span class="k">layer</span>         <span class="v">CAShapeLayer · evenOdd</span>
+<span class="k">tracking</span>      <span class="v">NSEvent global + local monitors</span>
+<span class="k">mouse</span>         <span class="v">ignoresMouseEvents = true</span>
+
+<span class="c">// persistence</span>
+<span class="k">settings</span>      <span class="v">UserDefaults</span>
+<span class="k">login item</span>    <span class="v">SMAppService.mainApp</span>
+<span class="k">i18n</span>          <span class="v">.lproj bundles, runtime swap</span></pre>
+    </div>
+</section>
+
+<section id="install">
+    <div class="section-head reveal">
+        <div>
+            <span class="label">[ 04 ]  Install</span>
+            <h2>Build from source.</h2>
+        </div>
+    </div>
+    <div class="install-box reveal">
+        <span class="cmd" id="installCmd">git clone https://github.com/hyunseokbyun/whereismycursor &amp;&amp; cd whereismycursor &amp;&amp; ./build-app.sh release</span>
+        <button class="copy-btn" id="copyBtn">Copy</button>
+    </div>
+    <p style="margin-top: 16px; color: var(--fg-dim); font-size: 13px; font-family: 'JetBrains Mono', monospace;">
+        Output → <span style="color: var(--fg-mid);">.build/CursorSpotlight.app</span>
+    </p>
+</section>
+
+</main>
+
+<footer>
+    <div>© 2026 Hyunseok Byun · MIT License</div>
+    <div>
+        <a href="https://github.com/hyunseokbyun/whereismycursor" target="_blank" rel="noopener">github</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/hyunseokbyun/whereismycursor/issues" target="_blank" rel="noopener">issues</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/hyunseokbyun/whereismycursor/releases" target="_blank" rel="noopener">releases</a>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/video.js@8.23.8/dist/video.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/videojs-youtube@3.0.1/dist/Youtube.min.js"></script>
+
+<script>
+(() => {
+    const spotlight = document.getElementById('spotlight');
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let tx = mx, ty = my;
+
+    window.addEventListener('pointermove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+    }, { passive: true });
+
+    const animate = () => {
+        mx += (tx - mx) * 0.15;
+        my += (ty - my) * 0.15;
+        spotlight.style.setProperty('--mx', mx + 'px');
+        spotlight.style.setProperty('--my', my + 'px');
+        requestAnimationFrame(animate);
+    };
+    animate();
+
+    if (window.gsap) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const titles = document.querySelectorAll('[data-anim="title"]');
+        gsap.from(titles, {
+            y: '100%',
+            duration: 0.9,
+            ease: 'power3.out',
+            stagger: 0.08,
+            delay: 0.1,
+        });
+
+        gsap.utils.toArray('.reveal').forEach((el) => {
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 92%',
+                    toggleActions: 'play none none none',
+                },
+            });
+        });
+    } else {
+        document.querySelectorAll('.reveal').forEach((el) => {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+    }
+
+    const copyBtn = document.getElementById('copyBtn');
+    const installCmd = document.getElementById('installCmd');
+    copyBtn?.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(installCmd.textContent.trim());
+            copyBtn.textContent = 'Copied';
+            copyBtn.classList.add('copied');
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy';
+                copyBtn.classList.remove('copied');
+            }, 1400);
+        } catch (_) {
+            copyBtn.textContent = 'Failed';
+            setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1200);
+        }
+    });
+
+    if (window.videojs) {
+        videojs('demoVideo', {
+            techOrder: ['youtube'],
+            sources: [{
+                type: 'video/youtube',
+                src: 'https://www.youtube.com/watch?v=ShL96cGB_2s',
+            }],
+            youtube: {
+                ytControls: 0,
+                modestbranding: 1,
+                rel: 0,
+                iv_load_policy: 3,
+                playsinline: 1,
+            },
+            controls: true,
+            preload: 'none',
+            fluid: false,
+            responsive: true,
+            playbackRates: [0.5, 1, 1.25, 1.5, 2],
+        });
+    }
+
+    const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
+    const isNarrow = matchMedia('(max-width: 768px)').matches;
+    const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (window.gsap && window.ScrollToPlugin && !isCoarsePointer && !isNarrow && !prefersReducedMotion) {
+        gsap.registerPlugin(ScrollToPlugin);
+
+        const getPanels = () => {
+            const list = [...document.querySelectorAll('main > section')];
+            list.push(document.querySelector('footer'));
+            return list.filter(Boolean);
+        };
+
+        let panels = getPanels();
+        let currentIndex = 0;
+        let isLocked = false;
+        const DURATION = 0.7;
+        const COOLDOWN_MS = DURATION * 1000 + 80;
+
+        const findCurrentIndex = () => {
+            const y = window.scrollY;
+            let idx = 0;
+            let best = Infinity;
+            panels.forEach((el, i) => {
+                const d = Math.abs(el.offsetTop - y);
+                if (d < best) { best = d; idx = i; }
+            });
+            return idx;
+        };
+
+        currentIndex = findCurrentIndex();
+
+        const goTo = (index) => {
+            const target = Math.max(0, Math.min(panels.length - 1, index));
+            if (target === currentIndex || isLocked) return;
+            isLocked = true;
+            currentIndex = target;
+            gsap.to(window, {
+                duration: DURATION,
+                ease: 'power2.inOut',
+                scrollTo: { y: panels[target], autoKill: false },
+                onComplete: () => {
+                    setTimeout(() => { isLocked = false; }, COOLDOWN_MS - DURATION * 1000);
+                },
+            });
+        };
+
+        const onWheel = (e) => {
+            if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+            e.preventDefault();
+            if (isLocked) return;
+            if (Math.abs(e.deltaY) < 4) return;
+            goTo(currentIndex + (e.deltaY > 0 ? 1 : -1));
+        };
+
+        const onKey = (e) => {
+            const keys = {
+                'ArrowDown': 1, 'PageDown': 1, ' ': 1,
+                'ArrowUp': -1, 'PageUp': -1,
+                'Home': -Infinity, 'End': Infinity,
+            };
+            if (!(e.key in keys)) return;
+            if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+            e.preventDefault();
+            const delta = keys[e.key];
+            if (delta === Infinity) goTo(panels.length - 1);
+            else if (delta === -Infinity) goTo(0);
+            else goTo(currentIndex + delta);
+        };
+
+        const onAnchor = (e) => {
+            const a = e.target.closest('a[href^="#"]');
+            if (!a) return;
+            const id = a.getAttribute('href').slice(1);
+            const target = document.getElementById(id);
+            if (!target) return;
+            const idx = panels.indexOf(target);
+            if (idx < 0) return;
+            e.preventDefault();
+            goTo(idx);
+        };
+
+        window.addEventListener('wheel', onWheel, { passive: false });
+        window.addEventListener('keydown', onKey);
+        document.addEventListener('click', onAnchor);
+        window.addEventListener('resize', () => {
+            panels = getPanels();
+            currentIndex = findCurrentIndex();
+        });
+    }
+})();
+</script>
+
+</body>
+</html>

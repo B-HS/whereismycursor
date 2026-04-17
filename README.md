@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://hyunseokbyun.github.io/whereismycursor/">Website</a>
+  <a href="https://b-hs.github.io/whereismycursor/">Website</a>
   &nbsp;·&nbsp;
-  <a href="https://github.com/hyunseokbyun/whereismycursor/releases/latest">Download</a>
+  <a href="https://github.com/b-hs/whereismycursor/releases/latest">Download</a>
 </p>
 
 ---
@@ -20,7 +20,7 @@
 ## Install
 
 ```bash
-git clone https://github.com/hyunseokbyun/whereismycursor
+git clone https://github.com/b-hs/whereismycursor
 cd whereismycursor
 ./build-app.sh release
 open .build/CursorSpotlight.app

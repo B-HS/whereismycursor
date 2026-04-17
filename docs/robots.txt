@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hyunseokbyun.github.io/whereismycursor/sitemap.xml
+Sitemap: https://b-hs.github.io/whereismycursor/sitemap.xml

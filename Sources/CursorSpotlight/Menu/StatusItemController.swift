@@ -31,7 +31,8 @@ final class StatusItemController: NSObject {
     func install() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = item.button {
-            let image = NSImage(systemSymbolName: "scope", accessibilityDescription: "Cursor Spotlight")
+            let image = NSImage(named: "MenuBarIcon")
+                ?? NSImage(systemSymbolName: "scope", accessibilityDescription: "Cursor Spotlight")
             image?.isTemplate = true
             button.image = image
         }

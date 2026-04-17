@@ -3,9 +3,10 @@ set -euo pipefail
 
 CONFIG="${1:-release}"
 APP_NAME="CursorSpotlight"
+BUNDLE_NAME="Where is my cursor"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BUILD_DIR="$ROOT_DIR/.build"
-APP_DIR="$BUILD_DIR/$APP_NAME.app"
+APP_DIR="$BUILD_DIR/$BUNDLE_NAME.app"
 
 echo "==> Building ($CONFIG)"
 cd "$ROOT_DIR"

@@ -85,17 +85,18 @@ jobs:
 
       - name: Stamp version into Info.plist
         run: |
-          plutil -replace CFBundleShortVersionString -string "${{ steps.version.outputs.short }}" .build/CursorSpotlight.app/Contents/Info.plist
-          plutil -replace CFBundleVersion -string "${{ github.run_number }}" .build/CursorSpotlight.app/Contents/Info.plist
-          codesign --force --deep --sign - .build/CursorSpotlight.app
+          APP=".build/Where is my cursor.app"
+          plutil -replace CFBundleShortVersionString -string "${{ steps.version.outputs.short }}" "$APP/Contents/Info.plist"
+          plutil -replace CFBundleVersion -string "${{ github.run_number }}" "$APP/Contents/Info.plist"
+          codesign --force --deep --sign - "$APP"
 
       - name: Package .zip
         id: package
         run: |
           cd .build
-          ditto -c -k --keepParent CursorSpotlight.app "CursorSpotlight-${{ steps.version.outputs.next }}.zip"
-          echo "path=.build/CursorSpotlight-${{ steps.version.outputs.next }}.zip" >> "$GITHUB_OUTPUT"
-          shasum -a 256 "CursorSpotlight-${{ steps.version.outputs.next }}.zip" > "CursorSpotlight-${{ steps.version.outputs.next }}.zip.sha256"
+          ditto -c -k --keepParent "Where is my cursor.app" "WhereIsMyCursor-${{ steps.version.outputs.next }}.zip"
+          echo "path=.build/WhereIsMyCursor-${{ steps.version.outputs.next }}.zip" >> "$GITHUB_OUTPUT"
+          shasum -a 256 "WhereIsMyCursor-${{ steps.version.outputs.next }}.zip" > "WhereIsMyCursor-${{ steps.version.outputs.next }}.zip.sha256"
 
       - name: Create tag
         run: |
@@ -121,7 +122,7 @@ jobs:
             echo ""
             echo "### Artifacts"
             echo ""
-            echo "- \`CursorSpotlight-${{ steps.version.outputs.next }}.zip\` — ad-hoc signed macOS .app bundle"
+            echo "- \`WhereIsMyCursor-${{ steps.version.outputs.next }}.zip\` — ad-hoc signed macOS .app bundle"
             echo "- \`.sha256\` — checksum"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
@@ -135,5 +136,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            .build/CursorSpotlight-${{ steps.version.outputs.next }}.zip
-            .build/CursorSpotlight-${{ steps.version.outputs.next }}.zip.sha256
+            .build/WhereIsMyCursor-${{ steps.version.outputs.next }}.zip
+            .build/WhereIsMyCursor-${{ steps.version.outputs.next }}.zip.sha256

@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/assets/icon-192.png" width="96" alt="Cursor Spotlight" />
+  <img src="docs/assets/icon-192.png" width="96" alt="Where is my cursor" />
 </p>
 
-<h1 align="center">Cursor Spotlight</h1>
+<h1 align="center">Where is my cursor</h1>
 
 <p align="center">
   A minimalist macOS menu bar utility that spotlights your mouse cursor.<br/>
@@ -23,7 +23,7 @@
 git clone https://github.com/b-hs/whereismycursor
 cd whereismycursor
 ./build-app.sh release
-open .build/CursorSpotlight.app
+open ".build/Where is my cursor.app"
 ```
 
 Requires macOS 13 or later.

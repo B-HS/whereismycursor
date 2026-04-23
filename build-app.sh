@@ -7,6 +7,11 @@ BUNDLE_NAME="Where is my cursor"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BUILD_DIR="$ROOT_DIR/.build"
 APP_DIR="$BUILD_DIR/$BUNDLE_NAME.app"
+ENTITLEMENTS="$ROOT_DIR/Resources/CursorSpotlight.entitlements"
+
+# CI injects CODESIGN_IDENTITY to sign with a Developer ID cert. When unset
+# (local developer builds) we fall back to ad-hoc so nothing changes.
+IDENTITY="${CODESIGN_IDENTITY:--}"
 
 echo "==> Building ($CONFIG)"
 cd "$ROOT_DIR"
@@ -30,8 +35,15 @@ for lproj in "$ROOT_DIR/Resources/"*.lproj; do
     cp -R "$lproj/"* "$APP_DIR/Contents/Resources/$name/"
 done
 
-echo "==> Ad-hoc codesign"
-codesign --force --deep --sign - "$APP_DIR"
+echo "==> Codesign (identity: $IDENTITY)"
+SIGN_ARGS=(--force --deep --sign "$IDENTITY")
+if [ "$IDENTITY" != "-" ]; then
+    SIGN_ARGS=(--force --deep --options runtime --timestamp --sign "$IDENTITY")
+    if [ -f "$ENTITLEMENTS" ]; then
+        SIGN_ARGS+=(--entitlements "$ENTITLEMENTS")
+    fi
+fi
+codesign "${SIGN_ARGS[@]}" "$APP_DIR"
 
 echo "==> Done: $APP_DIR"
 echo "Launch with: open \"$APP_DIR\""

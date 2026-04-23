@@ -8,9 +8,6 @@ ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BUILD_DIR="$ROOT_DIR/.build"
 APP_DIR="$BUILD_DIR/$BUNDLE_NAME.app"
 ENTITLEMENTS="$ROOT_DIR/Resources/CursorSpotlight.entitlements"
-
-# CI injects CODESIGN_IDENTITY to sign with a Developer ID cert. When unset
-# (local developer builds) we fall back to ad-hoc so nothing changes.
 IDENTITY="${CODESIGN_IDENTITY:--}"
 
 echo "==> Building ($CONFIG)"
